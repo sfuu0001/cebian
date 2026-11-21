@@ -1,0 +1,5 @@
+{
+  "name": "UrbanRadar 商家端侧边栏",
+  "description": "UrbanRadar 流动餐车商户操作台左侧功能导航与 RBAC 权限控制工作台（26 模块 / 6 分组）",
+  "requestFramePermissions": []
+}

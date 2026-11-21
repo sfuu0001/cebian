@@ -1,0 +1,407 @@
+@import "tailwindcss";
+
+/* 供售打样 / 打烊盘点 · 母版源码设计令牌 (--sc-*) */
+:root {
+  --sc-brand-primary: #006494;
+  --sc-brand-primary-soft: #E8F3FA;
+  --sc-brand-accent: #3BB4FE;
+  --sc-brand-deep: #001020;
+  --sc-ink-strong: #111827;
+  --sc-ink-body: #71767B;
+  --sc-ink-muted: #8A9096;
+  --sc-line-strong: #CCCCCC;
+  --sc-line-soft: #E2E2DF;
+  --sc-surface-base: #FCFCFB;
+  --sc-surface-raised: #F8F8F6;
+  --sc-surface-sunken: #F6F6F4;
+  --sc-surface-alt: #F4F4F2;
+  --sc-surface-dim: #F0F0EE;
+  --sc-surface-high: #F9F9F8;
+  --sc-surface-chip: #EAEAE8;
+  --sc-surface-chip-strong: #E4E4E0;
+  --sc-state-danger: #D32F2F;
+  --sc-state-warn: #C26D00;
+  --sc-brand-glow: rgba(0, 100, 148, 0.5);
+  --sc-brand-accent-glow: rgba(59, 180, 254, 0.6);
+
+  --sc-text-2xs: 9.5px;
+  --sc-text-xs: 10px;
+  --sc-text-xs-plus: 10.5px;
+  --sc-text-sm: 11px;
+  --sc-text-sm-plus: 11.5px;
+  --sc-text-base: 13px;
+  --sc-text-md: 14px;
+  --sc-text-lg: 15px;
+  --sc-text-display: 32px;
+  --sc-radius-xs: 2px;
+  --sc-radius-sm: 3px;
+  --sc-radius-md: 4px;
+  --sc-radius-full: 9999px;
+}
+
+@theme {
+  --font-sans: "Manrope", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cccccc transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+    border-radius: 2px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 砌筑式横向逐格入场动画 */
+  .brick-hidden {
+    opacity: 0;
+    transform: translate3d(-22px, 10px, 0) scale(0.86);
+  }
+
+  .brick-enter {
+    animation: masonryBrickIn 400ms cubic-bezier(0.22, 1.24, 0.36, 1) both;
+    animation-delay: var(--brick-delay, 0ms);
+  }
+
+  /* 实时 SVG 路径绘制动画 */
+  .live-icon-draw svg {
+    animation: iconPlotterSettle 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--icon-delay, 0ms);
+  }
+
+  .live-icon-draw path,
+  .live-icon-draw rect,
+  .live-icon-draw circle,
+  .live-icon-draw line,
+  .live-icon-draw polyline,
+  .live-icon-draw polygon {
+    stroke-dasharray: 96;
+    stroke-dashoffset: 96;
+    animation: iconStrokeDraw 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--icon-delay, 0ms);
+  }
+
+  /* 悬停/点击实时重绘动画 */
+  .live-icon-redraw svg {
+    animation: iconPlotterSettle 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .live-icon-redraw path,
+  .live-icon-redraw rect,
+  .live-icon-redraw circle,
+  .live-icon-redraw line,
+  .live-icon-redraw polyline,
+  .live-icon-redraw polygon {
+    stroke-dasharray: 96;
+    stroke-dashoffset: 96;
+    animation: iconStrokeDraw 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 激活态 SVG 外框线条路径追踪绘制 */
+  .svg-border-trace {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: borderPathTrace 460ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* 分组分割线横向路径展开 */
+  .line-trace-x {
+    transform-origin: left center;
+    animation: lineTraceExpand 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 分组左侧竖条纵向生长 */
+  .bar-trace-y {
+    transform-origin: center top;
+    animation: barTraceGrow 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 点击确认精密脉冲环 */
+  .click-ripple-ring {
+    animation: clickConfirmPulse 380ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* 上下滚动引导箭头微浮动 */
+  .scroll-hint-up {
+    animation: scrollHintUp 1.6s ease-in-out infinite;
+  }
+
+  .scroll-hint-down {
+    animation: scrollHintDown 1.6s ease-in-out infinite;
+  }
+
+  /* 滚动指示条高速滑动发光态 */
+  .scroll-thumb-glow {
+    box-shadow: 0 0 8px rgba(59, 180, 254, 0.55);
+  }
+
+  /* 吸顶分组头部微影线 */
+  .sticky-header-shadow {
+    box-shadow: 0 2px 6px rgba(0, 16, 32, 0.06);
+  }
+
+  /* 激活态图标呼吸活感 */
+  .live-icon-breathe {
+    animation: activeIconBreathe 2.8s ease-in-out infinite;
+  }
+
+  /* 激活态雷达信标脉冲环 */
+  .live-beacon-ring {
+    animation: beaconPulseRing 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
+  /* 激活态微光扫描条 */
+  .live-scan-shimmer {
+    animation: activeScanSweep 2.6s ease-in-out infinite;
+  }
+
+  /* 紧急告警微脉冲 */
+  .live-alert-pulse {
+    animation: alertBadgePulse 1.8s ease-in-out infinite;
+  }
+
+  /* 工业精密镜面反光（线性斜角高光带 + 边缘倒角高光，无圆形光斑） */
+  .specular-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .specular-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    background-size: 240% 100%;
+    background-position: var(--mx-pos, 50%) 0%;
+    background-image: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(0, 100, 148, 0.04) 41%,
+      rgba(59, 180, 254, 0.14) 47%,
+      rgba(255, 255, 255, 0.96) 50%,
+      rgba(59, 180, 254, 0.12) 53%,
+      rgba(0, 100, 148, 0.03) 59%,
+      transparent 70%
+    );
+  }
+
+  .specular-card:hover::before {
+    opacity: 1;
+  }
+
+  .specular-card:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.98),
+      inset 0 -1px 0 rgba(0, 100, 148, 0.08),
+      0 4px 12px rgba(0, 16, 32, 0.07);
+  }
+
+  /* 单向斜角镜面扫光条 */
+  .specular-sweep {
+    position: absolute;
+    top: -15%;
+    bottom: -15%;
+    left: 0;
+    width: 64%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transform: translateX(-160%) skewX(-24deg);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 100, 148, 0.05) 18%,
+      rgba(59, 180, 254, 0.16) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(59, 180, 254, 0.18) 60%,
+      rgba(0, 100, 148, 0.04) 82%,
+      transparent 100%
+    );
+    transition: transform 0ms, opacity 120ms ease;
+  }
+
+  .specular-card:hover .specular-sweep {
+    opacity: 1;
+    transform: translateX(260%) skewX(-24deg);
+    transition:
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 180ms ease;
+  }
+}
+
+@keyframes masonryBrickIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(-22px, 10px, 0) scale(0.86);
+    filter: brightness(1.04);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(2px, -1.5px, 0) scale(1.022);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes iconPlotterSettle {
+  0% {
+    transform: scale(0.84) rotate(-4deg);
+  }
+  65% {
+    transform: scale(1.08) rotate(1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes iconStrokeDraw {
+  0% {
+    stroke-dasharray: 96;
+    stroke-dashoffset: 96;
+    opacity: 0.15;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 96;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes activeIconBreathe {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-1.5px) scale(1.06);
+  }
+}
+
+@keyframes beaconPulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%, 100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes activeScanSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+
+@keyframes alertBadgePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0);
+  }
+}
+
+@keyframes borderPathTrace {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.45;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes lineTraceExpand {
+  0% {
+    transform: scaleX(0);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes barTraceGrow {
+  0% {
+    transform: scaleY(0);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes clickConfirmPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.03);
+    opacity: 0;
+  }
+}
+
+@keyframes scrollHintUp {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes scrollHintDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
